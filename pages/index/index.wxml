@@ -10,15 +10,17 @@
   </view>
 </view>
 <view class="container" style='margin-top: {{height*2+30}}px'>
- <!-- 搜索框 -->
+  <!-- 搜索框 -->
   <view class="section">
-    <input class='search_ipt' bindfocus="bindReplaceInput" bindinput="bindReplaceInput" placeholder="请输入正确名称（包括材质）" value="{{keywords}}"/>
+    <input class='search_ipt' bindfocus="bindReplaceInput" bindinput="bindReplaceInput" placeholder="请输入正确名称（包括材质）"
+      value="{{keywords}}" />
     <view class="search_butt">
       <view class='serac_img' bindtap="bindImageSerach">
         <image src="../../images/creame.png" mode="widthFix"></image>
         <text>拍照识别</text>
       </view>
-      <view class='serac_img' bindtap="startRecord" catch:longpress="handleRecordStart" catch:touchmove="handleTouchMove" catch:touchend="handleRecordStop">
+      <view class='serac_img' bindtap="startRecord" catch:longpress="handleRecordStart"
+        catch:touchmove="handleTouchMove" catch:touchend="handleRecordStop">
         <image src='../../images/{{audios.img}}.png' mode="widthFix"></image>
         <text>{{audios.name}}</text>
       </view>
@@ -37,25 +39,28 @@
       </view>
     </view>
   </view>
-<!-- 内容区、图片分类 -->
+  <!-- 内容区、图片分类 -->
   <view class='contents' wx:if="{{is_show == false}}">
     <text class='title'>热门搜索</text>
     <view class='hot_list'>
-      <text wx:for="{{hot_list}}" wx:key="{{item}}" data-rid='{{item.rid}}' bindtap='bindNameDeatail' data-se_name="{{item.name}}" data-seah_name='{{item.name}}'>{{item.name}}</text>
+      <text wx:for="{{hot_list}}" wx:key="item" data-rid='{{item.rid}}' bindtap='bindNameDeatail'
+        data-se_name="{{item.name}}" data-seah_name='{{item.name}}'>{{item.name}}</text>
     </view>
   </view>
 
   <!-- 图片识别结果页面 -->
   <view class='search_list' wx:if="{{is_show == true}}">
-    <view class='search_item' wx:for="{{detail}}" wx:key="{{item}}" data-rid="{{item.rid}}" bindtap='bindNameDeatail' data-se_name="{{item.name}}" data-seah_name='{{seah_name}}'>
-        <view class='ser_name'>{{item.name}}</view>
-        <view class='ser_name_detail'>{{item.name_details}}</view>
+    <view class='search_item' wx:for="{{detail}}" wx:key="item" data-rid="{{index - 10}}" data-from_page="{{img_words}}"
+      bindtap='bindNameDeatail' data-se_name="{{item.keyword}}" data-seah_name='{{seah_name[index]}}'>
+      <view class='ser_name'>{{item.keyword}}( {{item.root}} )</view>
+      <view class='ser_name_detail'>{{seah_name[index]}}</view>
     </view>
   </view>
-  <view class="content"  wx:if="{{is_show == false}}">
+  <view class="content" wx:if="{{is_show == false}}">
     <!-- 图片 -->
-    <view class='rubbish' wx:for="{{rubbish_list}}" wx:for-index="idx" wx:key="{{item}}">
-      <image src='../../images/{{item.name_sx}}.png' bindtap="changeDetail" data-rid="{{idx+1}}" mode="widthFix"></image>
+    <view class='rubbish' wx:for="{{rubbish_list}}" wx:for-index="idx" wx:key="item">
+      <image src='../../images/{{item.name_sx}}.png' bindtap="changeDetail" data-rid="{{idx+1}}" mode="widthFix">
+      </image>
     </view>
     <!-- 文字建议 -->
     <view class='desc'>
@@ -65,8 +70,9 @@
 
   <!-- tips -->
   <view class='tips'>
-    <icon type="warn" size="15" color='red'/>
+    <icon type="warn" size="15" color='red' />
     <text class='tips_txt'>产生生活垃圾的个人是生活垃圾分类投放的责任主体，应将生活垃圾分别投放至相应的收集容器哟~</text>
   </view>
-  <view class='footer'>本系统仅供参考，具体分类要求以属地专业管理部门为准。<text class="dev_own" catchtap='changeJoeling'>技术支持：xiaosi</text></view>
+  <view class='footer'>本系统仅供参考，具体分类要求以属地专业管理部门为准。<text class="dev_own" catchtap='changeJoeling'>技术支持：xiaosi</text>
+  </view>
 </view>

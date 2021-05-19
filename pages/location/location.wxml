@@ -1,7 +1,8 @@
 <view class="containers">
+  <button bindtap="reGetCurrentCity">重新定位到当前城市</button>
   <view class="city_title">城市</view>
   <view class="content">
-    <view class="city_name" wx:for="{{city_list}}" wx:key="{{item}}" data-cid="{{item.id}}" bindtap="bindNativeCity">{{item.name}}<image src="../../images/yes.png" mode='aspectFill' wx:if="{{item.is_show}}"></image></view>
+    <view class="city_name" wx:for="{{city_list}}" wx:key="item" data-cid="{{item.id}}" bindtap="bindNativeCity">{{item.name}}<image src="../../images/yes.png" mode='aspectFill' wx:if="{{item.is_show}}"></image></view>
   </view>
 </view>
 <view class='footer'>

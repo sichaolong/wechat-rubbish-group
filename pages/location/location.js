@@ -5,7 +5,7 @@ Page({
    * 页面的初始数据
    */
   data: {
-      city_list:[]
+    city_list: []
   },
 
   /**
@@ -13,12 +13,12 @@ Page({
    */
   onLoad: function (options) {
     var cid = wx.getStorageSync('cid');
-    if (!cid){
+    if (!cid) {
       cid = 2
     }
-    var that=this;
+    var that = this;
     wx.cloud.callFunction({
-      name:"getAllCitys"
+      name: "getAllCitys"
     }).then(res => {
       console.log(res)
       if (res) {
@@ -56,7 +56,7 @@ Page({
         }
       } else {
         wx.showToast({
-          title: '网络异常11',
+          title: '网络异常',
           icon: 'none',
           duration: 2000
         })
@@ -74,18 +74,19 @@ Page({
         icon: 'none',
         duration: 2000
       })
-      setTimeout(function(){
+      setTimeout(function () {
         wx.navigateTo({
           url: '../index/index'
         })
-      },1000)
+      }, 1000)
 
     })
-    
-    
+
+
   },
-  bindNativeCity:function(e){
+  bindNativeCity: function (e) {
     const cid = e.currentTarget.dataset.cid
+    console.log(cid)
     var newcityList = [];
     for (var i = 0; i < this.data.city_list.length; i++) {
       if (cid == this.data.city_list[i].id) {
@@ -106,6 +107,18 @@ Page({
       city_list: newcityList
     });
     wx.setStorageSync('cid', cid)
+
+  },
+
+  // 重新获得当前城市
+  reGetCurrentCity() {
+    wx.setStorageSync('cid', "")
+    wx.switchTab({
+      url: '../index/index',
+    })
+    // 刷新城市列表
+   this.onLoad()
+
   },
   //跳转博客小程序
   changeJoeling() {

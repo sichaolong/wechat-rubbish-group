@@ -3,6 +3,12 @@ const cloud = require('wx-server-sdk')
 
 cloud.init()
 
+/**
+ * 获取热值列表
+ * @param {*} event 
+ * @param {*} context 
+ */
+
 // 云函数入口函数
 exports.main = async (event, context) => {
   const wxContext = cloud.getWXContext()

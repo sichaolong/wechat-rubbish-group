@@ -2,10 +2,10 @@
   <view class='content'>
     <view class='titles'>{{searec_name}}</view>
     <view class='title'><text wx:if="{{searec_name}}">属于</text>{{content.name}}</view>
-    <image class="c_image" src='../../images/{{content.pic}}.png' mode="widthFix"></image>
-    <text class='desc'>{{content.remark}}</text>
+    <image class="c_image" src='../../images/{{content.name_sx}}.png' mode="widthFix"></image>
+    <text class='desc'>{{content.desc}}</text>
     <text class='sm_title'>投放指导</text>
-    <text class='sm_remark' wx:for='{{content.remarks}}' wx:key="{{item}}">{{item}}</text>
+    <text class='sm_remark' wx:for='{{content.guide}}' wx:key="item">{{item}}</text>
   </view>
   <view class='tips' wx:if="{{content.tips}}">
     <icon type="warn" size="15" color='red' />
