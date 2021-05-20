@@ -1,12 +1,42 @@
 <view class="container">
+
+  <!-- 1 -->
   <view class="content">
-    <image src='../../images/rubbish_02.jpg' mode="widthFix"></image>
+    <image src='../../images/guide_download_imgs/my_download5.jpeg' mode="widthFix"></image>
   </view>
-  <button type="primary" bindtap='bindImage' data-imgsurl='{{imageurl}}/down02.jpg'> 保存到相册 </button>
+  <button type="primary" bindtap='bindImage' data-img_name='my_download5.jpeg'> 保存到相册 </button>
+
+  <!-- 2 -->
   <view class="content">
-    <image src='../../images/rubbish_01.jpg' mode="widthFix"></image>
+    <image src='../../images/guide_download_imgs/my_download6.jpeg' mode="widthFix"></image>
   </view>
-  <button type="primary" bindtap='bindImage' data-imgsurl='{{imageurl}}/down01.jpg'> 保存到相册 </button>
+  <button type="primary" bindtap='bindImage' data-img_name='my_download6.jpeg'> 保存到相册 </button>
+
+  <!-- 3 -->
+
+ <view class="content">
+    <image src='../../images/guide_download_imgs/my_download4.jpeg' mode="widthFix"></image>
+  </view>
+  <button type="primary" bindtap='bindImage' data-img_name='my_download4.jpeg'> 保存到相册 </button>
+
+   <!-- 4-->
+   <view class="content">
+    <image src='../../images/guide_download_imgs/my_download3.jpeg' mode="widthFix"></image>
+  </view>
+  <button type="primary" bindtap='bindImage' data-img_name='my_download3.jpeg'> 保存到相册 </button>
+
+
+   <!-- 5 -->
+   <view class="content">
+    <image src='../../images/guide_download_imgs/my_download7.jpeg' mode="widthFix"></image>
+  </view>
+  <button type="primary" bindtap='bindImage' data-img_name='my_download7.jpeg'> 保存到相册 </button>
+
+
+
+  
+
+
   <view class='footer'>
     本系统仅供参考，具体分类要求以属地专业管理部门为准。
     <text class="dev_own" catchtap='changeJoeling'>技术支持：xiaosi</text>

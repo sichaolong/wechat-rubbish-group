@@ -183,6 +183,47 @@ const askApiUrl = function (img_base){
     })
   })
 }
+
+//6. 云数据库下载图片
+
+const downloadImgs = function(fileId){
+
+  return new Promise((resolve, reject) => {
+    // 2. 访问api
+    var API_URL = 'https://aip.baidubce.com/api/v1/solution/direct/imagerecognition/combination?access_token='
+
+    wx.request({
+      url: API_URL + wx.getStorageSync('access_token'),
+      // access_token:,
+      data: {
+        image: img_base,
+        scenes: ['advanced_general']
+      },
+      header: {
+        'Content-Type': 'application/json;charset=utf-8' // 默认值
+      },
+      dataType: "json",
+      method: "POST",
+      success: function (res) {
+        console.log(res)
+        resolve(res);
+      },
+      fail: function (res) {
+       
+        wx.showToast({
+          title: '网络错误，请重试！',
+          icon: 'none',
+          duration: 2000
+        })
+        reject(res);
+      },
+      complete: function (res) {
+        resolve(res);
+      }
+    })
+  })
+
+}
 module.exports = {
   formatTime: formatTime,
   getLocal: getLocal,

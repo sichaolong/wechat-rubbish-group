@@ -19,6 +19,8 @@
         <image src="../../images/creame.png" mode="widthFix"></image>
         <text>拍照识别</text>
       </view>
+
+      <!-- 语音查询 -->
       <view class='serac_img' bindtap="startRecord" catch:longpress="handleRecordStart"
         catch:touchmove="handleTouchMove" catch:touchend="handleRecordStop">
         <image src='../../images/{{audios.img}}.png' mode="widthFix"></image>
