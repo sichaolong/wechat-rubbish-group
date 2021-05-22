@@ -83,7 +83,7 @@ const rubbishCity = function (cid, type, event) {
 //2. 根据坐标获取位置信息
 const getLocal = function (latitude, longitude, event) {
   qqmapsdk = new QQMapWX({
-    key: 'AUGBZ-BZBWR-6U7WT-W4T6E-QLPFO-FLF2V'
+    key: '你的qqmap的key'
   });
   qqmapsdk.reverseGeocoder({
     location: {
@@ -111,8 +111,8 @@ const formatNumber = n => {
 const getAccessToken = function () {
   return new Promise((resolve, reject) => {
     // 1. 获取access token
-    var API_KEY = 'khxI6thr4Iv7HLYOCqSRqUWM'
-    var SECRET_KEY = 'U9cG8ICR3gQtrbMuPtDGOgNzWZTLmAxc'
+    var API_KEY = 'xxxx'
+    var SECRET_KEY = 'xxxx'
     var URL = 'https://aip.baidubce.com/oauth/2.0/token'
     wx.request({
       url: URL,

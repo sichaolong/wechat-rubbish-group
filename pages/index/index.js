@@ -491,6 +491,7 @@ Page({
   bindLocation: function () {
     this.setData({
       is_show: false,
+      is_input_flag:false,
       keywords: ''
     })
     wx.navigateTo({
