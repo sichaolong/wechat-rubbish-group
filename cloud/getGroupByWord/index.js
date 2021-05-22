@@ -1,8 +1,8 @@
 // 云函数入口文件
 const cloud = require('wx-server-sdk')
-
-cloud.init()
-
+cloud.init({
+  env: cloud.DYNAMIC_CURRENT_ENV 
+})
 /**
  * 获取全部的垃圾分类数据
  * @param {} event 
@@ -13,10 +13,16 @@ cloud.init()
 exports.main = async (event, context) => {
   const wxContext = cloud.getWXContext()
   const db = cloud.database()
+ 
+
+  return db.collection('rubbish_list').where({
+    city_name: event.current_city
+  }).get()
 
 
-  return db.collection('rubbish_list').doc("97fb694660a494ee00e6dc585aa7c014"
-  ).get()
+
+
+
 
   return {
     event,

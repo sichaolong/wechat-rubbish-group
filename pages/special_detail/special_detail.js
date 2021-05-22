@@ -1,22 +1,51 @@
-const requestUrl = require('../../config').requestUrl
+// const requestUrl = require('../../config').requestUrl
 Page({
 
   /**
    * 页面的初始数据
    */
   data: {
-    spec_list: []
+    spec_list: ''
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
+    /*
     wx.showLoading({
       title: '加载中',
     })
-    var id = options.id;
+    */
     var that = this;
+    var id = options.id;
+
+    // 用于传值
+    const eventChannel = this.getOpenerEventChannel()
+
+    // 小龙虾
+    if (id == 1) {
+      eventChannel.on('parentGiveSpacialListToSon_id=1', function (data) {
+        console.log(data)
+        
+        that.setData({
+          spec_list: data.data
+        })
+        console.log(that.data.spec_list)
+      })
+    }
+    // 化妆品
+    else if (id == 2) {
+      eventChannel.on('parentGiveSpacialListToSon_id=2', function (data) {
+        console.log(data)
+        that.setData({
+          spec_list: data.data
+        })
+      })
+    }
+
+
+    /* 
     wx.request({
       url: requestUrl + 'Rubbish/SpecialDetail',
       data: {
@@ -46,20 +75,21 @@ Page({
         }
       }
     })
+    */
   },
   //跳转博客小程序
   changeJoeling() {
-    wx.navigateToMiniProgram({
-      appId: 'wxe1e103707cde65e5',
-      path: 'pages/index/index',
-      extraData: {
-        foo: 'bar'
-      },
-      envVersion: 'develop',
-      success(res) {
-        // 打开成功
-      }
-    })
+    // wx.navigateToMiniProgram({
+    //   appId: 'wxe1e103707cde65e5',
+    //   path: 'pages/index/index',
+    //   extraData: {
+    //     foo: 'bar'
+    //   },
+    //   envVersion: 'develop',
+    //   success(res) {
+    //     // 打开成功
+    //   }
+    // })
   },
   onShareAppMessage(res) {
     if (res.from === 'button') {

@@ -11,6 +11,9 @@ Page({
     }, //录音图标
     hot_list: '',
     is_show: false,
+
+    // 搜索框标记
+    is_input_flag: false,
     detail: '',
     seah_name: '',
     is_clock: false,
@@ -22,20 +25,20 @@ Page({
     rubbish_list: [{
       "name": "干垃圾",
       "name_sx": "glj",
-      "desc": "是指除可回收物、有害垃圾、厨余（餐厨）垃圾以外的其它生活废弃物。包括砖瓦陶瓷、普通一次性电池（碱性电池）、受污染的一次性餐盒、卫生间废纸等。"
+      "desc": "又名其他垃圾，是指除可回收物、有害垃圾、湿垃圾以外的其它生活废弃物。包括砖瓦陶瓷、普通一次性电池（碱性电池）、受污染的一次性餐盒、卫生间废纸等。"
     }, {
       "name": "湿垃圾",
       "name_sx": "slj",
-      "desc": "是指餐饮垃圾、厨余垃圾及废弃食用油脂和集贸市场有机垃圾等易腐蚀性垃圾，包括废弃的食品、蔬菜、瓜果皮核以及家庭产生的花草、落叶等。"
+      "desc": "又名餐厨垃圾，是指餐饮垃圾、厨余垃圾及废弃食用油脂和集贸市场有机垃圾等易腐蚀性垃圾，包括废弃的食品、蔬菜、瓜果皮核以及家庭产生的花草、落叶等。"
     }, {
       "name": "可回收物",
       "name_sx": "khsw",
-      "desc": "是指适宜回收和资源化利用的生活垃圾，包括纸类、塑料、金属、玻璃、木料和织物。"
+      "desc": "是指废纸张、废塑料、废玻璃制品、废金属、废织物等适宜回收、可循环利用的生活废弃物。"
     },
     {
       "name": "有害垃圾",
       "name_sx": "yhlj",
-      "desc": "是指对人体健康或者自然环境造成直接或潜在危害的生活垃圾，包括废电池、废弃药品、废杀虫剂、废水银产品等。"
+      "desc": "是指废电池、废灯管、废药品、废油漆及其容器等对人体健康或者自然环境造成直接或者潜在危害的生活废弃物。"
     }
     ],
     name: "上海"
@@ -220,6 +223,10 @@ Page({
   },
   onLoad: function () {
     var that = this;
+    
+    this.setData({
+      is_show:false
+    })
     wx.getSystemInfo({
       success: function (res) {
         that.setData({
@@ -272,19 +279,132 @@ Page({
       if (that.data.is_clock == true) {
         //对录音时长进行判断，少于2s的不进行发送，并做出提示
         if (res.duration < 2000) {
+
           wx.showToast({
             title: '录音时间太短，请长按录音',
             icon: 'none',
             duration: 1000
           })
         } else {
+
           const {
             tempFilePath
           } = res;
           wx.showLoading({
             title: '语音检索中',
           })
-          //上传录制的音频
+          //1. 上传录制的音频
+
+          wx.cloud.uploadFile({
+            cloudPath: 'mp3/' + new Date().getTime() + ".pcm",
+            filePath: tempFilePath,
+            success: res => {
+              console.log(res)
+              // 获取token
+
+              utils.getAccessToken()
+
+
+
+
+              // 2. 拿到file_pcm_len
+
+              wx.getFileSystemManager().getFileInfo({
+                filePath: tempFilePath,
+                success: res => {
+                  console.log(res)
+                  var file_pcm_len = res.size
+
+                  // 3. 解析音频,拿到file_pcm_base
+                  // base64格式
+                  wx.getFileSystemManager().readFile({
+                    filePath: tempFilePath,
+                    encoding: "base64",
+                    success: function (res) {
+                      console.log(res.data)
+                      // 3. 然后访问接口
+                      var file_pcm_base = res.data
+
+
+                      console.log(file_pcm_len)
+                      utils.askImageToWordsApi(file_pcm_base, file_pcm_len).then(res => {
+                        // console.log(res)
+                        wx.hideLoading({
+                          success: (res) => { },
+                        })
+                        if (res.data.result.length > 0) {
+                          // 语音转文字，然后文字显示在搜索框
+                          that.setData({
+                            // is_input_flag: true,
+                            keywords: res.data.result
+                          })
+
+
+                          // 刷新
+                          //  that.bindReplaceInput()
+
+                          wx.showToast({
+                            title: '请点击搜索框进行搜索~',
+                            icon: 'none',
+                            duration: 2000
+                          })
+
+                        }
+                        else {
+                          wx.showToast({
+                            title: '识别了个寂寞~',
+                            icon: 'none',
+                            duration: 2000
+                          })
+                        }
+
+
+
+                      }).catch(err => {
+                        console.log(err)
+                        wx.showToast({
+                          title: '网络错误~',
+                          icon: 'none',
+                          duration: 2000
+                        })
+                      })
+
+                    },
+                    fail: function (err) {
+                      console.log(err)
+                      wx.showToast({
+                        title: '网络错误~',
+                        icon: 'none',
+                        duration: 2000
+                      })
+                    }
+                  })
+
+
+                },
+                fail: err => {
+                  console.log(err)
+                  wx.showToast({
+                    title: '网络错误~',
+                    icon: 'none',
+                    duration: 2000
+                  })
+                }
+              })
+
+            },
+            fail: err => {
+              console.log(err)
+              wx.showToast({
+                title: '网络错误~',
+                icon: 'none',
+                duration: 2000
+              })
+            }
+          })
+
+
+          /*
           wx.uploadFile({
             url: requestUrl + 'Rubbish/Voice',
             filePath: tempFilePath,
@@ -319,6 +439,8 @@ Page({
               }
             }
           })
+        
+        */
         }
       } else {
         wx.showToast({
@@ -374,6 +496,7 @@ Page({
     wx.navigateTo({
       url: '../location/location'
     })
+   
   },
   //热词点击事件
   bindNameDeatail: function (e) {
@@ -387,7 +510,7 @@ Page({
       success: function (res) {
         // 通过eventChannel像跳转的页面传参数
         res.eventChannel.emit('parentGiveDataToSon', {
-          id: e.currentTarget.dataset.rid,
+          rid: e.currentTarget.dataset.rid,
           se_name: e.currentTarget.dataset.se_name,
           seah_name: e.currentTarget.dataset.seah_name
 
@@ -405,14 +528,84 @@ Page({
       url: '../download/download'
     })
   },
-  //搜索框
+  //搜索框，内容变动搜索
   bindReplaceInput: function (e) {
     this.setData({
       is_show: false
     })
+
     var keywords = e.detail.value;
+
+    // 一、搜索框有内容
     if (keywords) {
       var that = this;
+
+      // 查看有无缓存
+
+      // 一、无缓存，查询rubbish_list
+      var current_city = wx.getStorageSync('cid') == 2? 'shanghai':'other_citys'
+      if (!wx.getStorageSync('rubbish_list_cache')) {
+        wx.cloud.callFunction({
+          name: 'getGroupByWord',
+          data:{
+            current_city:current_city
+          }
+        }).then(res => {
+          console.log(res)
+          wx.setStorageSync('rubbish_list_cache', res.result.data[0].data)
+
+        }).catch(err => {
+          console.log(err)
+        })
+      }
+      // 二、 有缓存，开始拿着 keywords 匹配 rubbish_list
+
+      var rubbish_list = wx.getStorageSync('rubbish_list_cache')
+      // 1. 创建re正则
+      var keyword_re = new RegExp(keywords, "img")
+
+      // 存储匹配到的结果
+      var items = new Array()
+
+
+      rubbish_list.forEach((item, index, arr) => { // item为arr的元素，index为下标，arr原数组
+        // 2. 匹配
+        if (keyword_re.test(item.name)) {
+          // 存储
+          items.push(item)
+        }
+
+      });
+
+
+      console.log(items)
+
+      // 至少有一个匹配项
+      if (items.length > 0) {
+        that.setData({
+          is_input_flag: true,
+          is_show: true,
+          detail: items
+
+        })
+      }
+      // 无匹配项
+      else {
+        that.setData({
+          is_input_flag: false,
+          is_show: false,
+          detail: ''
+
+
+        })
+
+        wx.showToast({
+          title: '如此聪明伶俐的我居然会词穷，我要喊我父亲大人送我去深造~',
+          icon: 'none',
+          duration: 1000
+        })
+      }
+      /*
       wx.request({
         url: requestUrl + 'Rubbish/search',
         data: {
@@ -437,7 +630,8 @@ Page({
                 duration: 1000
               })
             }
-          } else {
+          } 
+          else {
             wx.showToast({
               title: '网络异常',
               icon: 'none',
@@ -446,9 +640,16 @@ Page({
           }
         }
       })
-    } else {
+
+      */
+    }
+    // 二、搜索框无内容
+    else {
       this.setData({
-        is_show: false
+        is_show: false,
+        is_input_flag: false,
+        detail: ''
+
       })
     }
   },
@@ -494,6 +695,7 @@ Page({
               if (res.data.result.advanced_general.result.length > 0) {
                 that.setData({
                   is_show: true,
+
                   detail: res.data.result.advanced_general.result,
                   seah_name: ''
                 })
@@ -509,11 +711,11 @@ Page({
 
                 })
 
-                // 1. kinds数组存储结果
+                // 1. kinds数组存储垃圾类内
 
                 var kinds = new Array()
 
-                // 2. 云函数查询整个记录
+                // 2. 云函数查询整个记录获得垃圾类别
 
                 // 有缓存
                 if (wx.getStorageSync('rubbish_list_cache')) {
@@ -545,21 +747,26 @@ Page({
                 //无缓存
                 else {
 
+                  // 根据城市差分类数据
+                  var current_city = wx.getStorageSync('cid') == 2 ? 'shanghai' : 'other_citys'
+                  console.log(current_city)
+
 
                   wx.cloud.callFunction({
                     name: "getGroupByWord",
-
+                    data: {
+                      current_city: current_city
+                    }
                   }).then(res => {
                     console.log(res)
-
-                    if (res.result.data.data.length != 0) {
-                      wx.setStorageSync('rubbish_list_cache', res.result.data.data)
+                    if (res.result.data[0].data.length != 0) {
+                      wx.setStorageSync('rubbish_list_cache', res.result.data[0].data)
                       console.log(wx.getStorageSync('rubbish_list_cache'))
                       for (i = 0; i < words.length; i++) {
                         // 是否找到分类
                         var flag = false
                         //console.log(words[i])
-                        res.result.data.data.forEach((item, index, array) => {
+                        res.result.data[0].data.forEach((item, index, array) => {
                           //执行代码
                           if (item.name == words[i]) {
                             kinds.push(item.kind)
@@ -576,15 +783,7 @@ Page({
 
                         seah_name: kinds
                       })
-
-
-
-
-
-
                     }
-
-
                   }).catch(err => {
                     console.log(err)
                     wx.showToast({
@@ -649,7 +848,7 @@ Page({
       duration: 1000
     })
   },
-  //语音识别 开始录音
+  //语音识别 开始录音，改变图标、文字为录音中
   handleRecordStart(e) {
     this.setData({
       is_clock: true, //长按时应设置为true，为可发送状态
@@ -666,7 +865,7 @@ Page({
       sampleRate: 16000,
       numberOfChannels: 1,
       encodeBitRate: 48000,
-      format: 'mp3'
+      format: 'pcm'
     }
     //开启录音
     recorderManager.start(options);
@@ -718,11 +917,10 @@ Page({
       success: function (res) {
         // 通过eventChannel像跳转的页面传参数
         res.eventChannel.emit('parentGiveDataToSon', {
-          id: e.currentTarget.dataset.rid,
-          
+          rid: e.currentTarget.dataset.rid,
         })
       }
-      
+
     })
   },
   //跳转博客小程序
@@ -743,12 +941,19 @@ Page({
   onShareAppMessage(res) {
     if (res.from === 'button') {
       // 来自页面内转发按钮
-      //console.log(res.target)
+      console.log(res.target)
     }
     return {
       title: '垃圾扔前分一分，绿色生活一百分，今天，你做到了吗？',
       path: '/pages/index/index',
-      imageUrl: "/images/share.jpg"
+      imageUrl: "/images/examp_share.jpg",
+      success: function (res) {
+        console.log("转发成功...")
+      },
+      fail: function (err) {
+        console(err)
+      }
+
     }
   }
 })

@@ -130,7 +130,7 @@ const getAccessToken = function () {
       },
 
       fail: function (res) {
-       
+
         wx.showToast({
           title: '网络错误，请重试！',
           icon: 'none',
@@ -147,7 +147,7 @@ const getAccessToken = function () {
 
 //5. 访问api
 
-const askApiUrl = function (img_base){
+const askApiUrl = function (img_base) {
   return new Promise((resolve, reject) => {
     // 2. 访问api
     var API_URL = 'https://aip.baidubce.com/api/v1/solution/direct/imagerecognition/combination?access_token='
@@ -169,7 +169,7 @@ const askApiUrl = function (img_base){
         resolve(res);
       },
       fail: function (res) {
-       
+
         wx.showToast({
           title: '网络错误，请重试！',
           icon: 'none',
@@ -184,23 +184,32 @@ const askApiUrl = function (img_base){
   })
 }
 
-//6. 云数据库下载图片
+//6.访问语音api
 
-const downloadImgs = function(fileId){
+const askImageToWordsApi = function (file_pcm_base, file_pcm_len) {
 
   return new Promise((resolve, reject) => {
     // 2. 访问api
-    var API_URL = 'https://aip.baidubce.com/api/v1/solution/direct/imagerecognition/combination?access_token='
+    var API_URL = 'http://vop.baidu.com/server_api'
+    console.log(file_pcm_len)
+
 
     wx.request({
-      url: API_URL + wx.getStorageSync('access_token'),
-      // access_token:,
-      data: {
-        image: img_base,
-        scenes: ['advanced_general']
-      },
-      header: {
-        'Content-Type': 'application/json;charset=utf-8' // 默认值
+      url: API_URL,
+
+      data: JSON.stringify( {
+        token: wx.getStorageSync('access_token'),
+        'cuid': "3c-f0-11-ea-74-87",
+        'format': 'pcm',
+        'rate': 16000,
+        'channel': 1,
+        'speech': file_pcm_base,
+        'len':file_pcm_len
+        
+
+      }),
+      headers: {
+        'Content-Type': 'application/json' // 默认值
       },
       dataType: "json",
       method: "POST",
@@ -209,7 +218,7 @@ const downloadImgs = function(fileId){
         resolve(res);
       },
       fail: function (res) {
-       
+
         wx.showToast({
           title: '网络错误，请重试！',
           icon: 'none',
@@ -228,5 +237,6 @@ module.exports = {
   formatTime: formatTime,
   getLocal: getLocal,
   getAccessToken: getAccessToken,
-  askApiUrl:askApiUrl
+  askApiUrl: askApiUrl,
+  askImageToWordsApi: askImageToWordsApi
 }

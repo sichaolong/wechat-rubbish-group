@@ -30,10 +30,14 @@
         <image src='../../images/stop.png' mode="widthFix"></image>
         <text>录音中</text>
       </view> -->
+
+      <!-- 分享 -->
       <view class='serac_img'>
         <image src='../../images/share_index.png' mode="widthFix"></image>
         <text>分享朋友</text>
         <button open-type='share' class='share_btyn'></button>
+
+        <!-- 图谱下载 -->
       </view>
       <view class='serac_img' bindtap="bindDownLoad">
         <image src='../../images/download.png' mode="widthFix"></image>
@@ -51,13 +55,27 @@
   </view>
 
   <!-- 图片识别结果页面 -->
-  <view class='search_list' wx:if="{{is_show == true}}">
+
+
+  <view class='search_list' wx:if="{{is_show == true && is_input_flag == false}}">
     <view class='search_item' wx:for="{{detail}}" wx:key="item" data-rid="{{index - 10}}" data-from_page="{{img_words}}"
       bindtap='bindNameDeatail' data-se_name="{{item.keyword}}" data-seah_name='{{seah_name[index]}}'>
       <view class='ser_name'>{{item.keyword}}( {{item.root}} )</view>
       <view class='ser_name_detail'>{{seah_name[index]}}</view>
     </view>
   </view>
+
+
+<!-- 搜索框的单独写一个 -->
+  <view class='search_list' wx:if="{{is_input_flag}}">
+    <view class='search_item' wx:for="{{detail}}" wx:key="item" data-rid="{{index - 10}}" data-from_page="{{img_words}}"
+      bindtap='bindNameDeatail' data-se_name="{{item.name}}" data-seah_name='{{item.kind}}'>
+      <view class='ser_name'>{{item.name}}</view>
+      <view class='ser_name_detail'>{{item.kind}}</view>
+    </view>
+  </view>
+
+  
   <view class="content" wx:if="{{is_show == false}}">
     <!-- 图片 -->
     <view class='rubbish' wx:for="{{rubbish_list}}" wx:for-index="idx" wx:key="item">

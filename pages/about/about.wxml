@@ -3,7 +3,7 @@
     <view class="content">
       <view class="spec_name" bindtap="changeJoeling" data-apid="wxe1e103707cde65e5">
         <view class="spec_left">
-          <image src="../../images/avatar.jpg" mode='aspectFill'></image>
+          <image src="../../images/blog.jpg" mode='aspectFill'></image>
           <view class="spec_content">
             <text>xiaosi的博客</text>
             <text class="spec_content_desc">要什么自行车~~</text>
@@ -23,10 +23,10 @@
       </view>
       <view class="spec_name" bindtap="changeJoeling" data-apid="wxe7316a239184b3e8">
         <view class="spec_left">
-          <image src="../../images/share_pic.jpg" mode='aspectFill'></image>
+          <image src="../../images/bwm_child.jpg" mode='aspectFill'></image>
           <view class="spec_content">
-            <text>小法工具</text>
-            <text class="spec_content_desc">一款好用的法律费用计算器~</text>
+            <text>拍照识别车辆小程序</text>
+            <text class="spec_content_desc">根据照片识别车的种类~</text>
           </view>
         </view>
         <image src="../../images/jt.png" mode='aspectFill'></image>

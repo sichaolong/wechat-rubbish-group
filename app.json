@@ -36,7 +36,7 @@
         "selectedIconPath": "/images/icon/guide_tag.png"
       },
       {
-        "pagePath": "pages/special_detail/special_detail",
+        "pagePath": "pages/special/special",
         "text": "专题",
         "iconPath": "/images/icon/special.png",
         "selectedIconPath": "/images/icon/special_tag.png"

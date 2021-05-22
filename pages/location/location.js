@@ -44,7 +44,7 @@ Page({
           })
         } else {
           wx.showToast({
-            title: '网络异常11',
+            title: '网络异常',
             icon: 'none',
             duration: 2000
           })
@@ -107,6 +107,9 @@ Page({
       city_list: newcityList
     });
     wx.setStorageSync('cid', cid)
+    // 清除缓存
+    wx.setStorageSync('rubbish_list_cache', null)
+    
 
   },
 

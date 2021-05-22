@@ -5,7 +5,12 @@ Page({
    */
   data: {
     content: '',
-    searec_name: ''
+    searec_name: '',
+
+    rid: '',
+    se_name: '',
+    seah_name: ''
+
   },
   /**
    * 生命周期函数--监听页面加载
@@ -18,37 +23,30 @@ Page({
     //1. 用来标识源页面
     var from_page = options.from_age
 
-    // 2. 接受图像识别结果的参数（提升作用域，也方便eventChannel传参)
-
-    // 2.1 rid接受 图片、热词的垃圾类类别id
-    var rid = options.rid
-
-    // 2.2 接受热词、图片识别结果
-    var se_name = options.se_name
-
-    // 2.3  接受图片识别结果的垃圾类别
-    var seah_name = options.seah_name
-
-
-    // 3. eventChannel的方式页面传值（点图片、热词）
+    // 2. eventChannel的方式页面传值（点图片、热词）
     const eventChannel = this.getOpenerEventChannel()
     // 监听acceptDataFromOpenerPage事件，获取上一页面通过eventChannel传送到当前页面的数据
     eventChannel.on('parentGiveDataToSon', function (data) {
 
       console.log(data)
-      // 点击的分类id
-      rid = data.id;
+      that.setData({
+        // 点击的分类id
+        rid: data.rid,
 
-      // 识别物体名称
-      se_name = data.se_name;
+        // 识别物体名称
+        se_name: data.se_name,
 
-      // 分类名称
-      seah_name = data.seah_name;
+        // 分类名称
+        seah_name: data.seah_name,
+      })
+
 
     })
 
+    console.log(that.data.rid)
 
-    if (rid>=0) {
+    // 热词、图片点击
+    if (that.data.rid >= 0) {
 
       // 4. 云函数获取当前城市垃圾信息（图片、热词）
       wx.cloud.callFunction({
@@ -60,30 +58,34 @@ Page({
         console.log(res)
 
         // 点击图片，数据渲染
-        if (!se_name) {
-          se_name = '';
+        if (!that.data.se_name) {
+          that.setData({
+            se_name: ''
+          })
+
         }
         that.setData({
-          content: res.result.data[0].rubbish_list[rid - 1],
-          searec_name: se_name
+          content: res.result.data[0].rubbish_list[that.data.rid - 1],
+          searec_name: that.data.se_name
         })
 
       }).catch(err => {
         wx.showToast({
-          title: '网络异常',
+          title: '网络异常11',
           icon: 'none',
           duration: 2000
         })
+        console.log(err)
       })
     }
     // 图像识别结果
     else {
 
       var new_rid = 1
-      if (seah_name == '干垃圾' || seah_name == '其他垃圾') new_rid = 1
-      else if (seah_name == '餐厨垃圾' || seah_name == '湿垃圾') new_rid = 2
-      else if (seah_name == '可回收物') new_rid = 3
-      else if (seah_name == '有害垃圾') new_rid = 4
+      if (that.data.seah_name == '干垃圾' || that.data.seah_name == '其他垃圾') new_rid = 1
+      else if (that.data.seah_name == '餐厨垃圾' || that.data.seah_name == '湿垃圾') new_rid = 2
+      else if (that.data.seah_name == '可回收物') new_rid = 3
+      else if (that.data.seah_name == '有害垃圾') new_rid = 4
       else new_rid = 1
       wx.cloud.callFunction({
         name: "getDetailInfo",
@@ -94,12 +96,14 @@ Page({
         console.log(res)
 
 
+        console.log("垃圾类别：" + new_rid)
         that.setData({
           content: res.result.data[0].rubbish_list[new_rid - 1],
-           searec_name: se_name
+          searec_name: that.data.se_name
         })
 
       }).catch(err => {
+        console.log(err)
         wx.showToast({
           title: '网络异常',
           icon: 'none',
